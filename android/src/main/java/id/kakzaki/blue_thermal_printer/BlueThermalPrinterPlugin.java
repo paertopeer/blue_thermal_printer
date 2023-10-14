@@ -308,7 +308,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           printCustom(result, message, size, align, charset);*/
           int largura = 72;
           int altura = 50;
-          Bitmap bitmap = Bitmap.createBitmap(largura, altura, Bitmap.Config.ARGB_8888)
+          Bitmap bitmap = Bitmap.createBitmap(largura, altura, Bitmap.Config.ARGB_8888);
           printfManager.printf(72, 50, bitmap, activity);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
