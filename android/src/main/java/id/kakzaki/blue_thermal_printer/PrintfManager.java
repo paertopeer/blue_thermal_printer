@@ -196,14 +196,16 @@ public class PrintfManager {
     };
 
     public void printf(final int width, final int height, final Bitmap bitmap) {
-        MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
+        System.out.println("Bluetooth conectado: " + isConnect());
+        if (isConnect()) {
+            realPrintfBitmapByLabelView(width,height,bitmap,128,1);
+        }
+        /*MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                if (isConnect()) {
-                    realPrintfBitmapByLabelView(width,height,bitmap,128,1);
-                }
+
             }
-        });
+        });*/
 
     }
 
