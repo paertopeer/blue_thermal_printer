@@ -1,15 +1,69 @@
 package id.kakzaki.blue_thermal_printer;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
+
+import id.kakzaki.blue_thermal_printer.sdk.PrinterConstants;
 import id.kakzaki.blue_thermal_printer.sdk.PrinterInstance;
+import id.kakzaki.blue_thermal_printer.sdk.SharedPreferencesManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class PrintfManager {
 
     public static int ORDINARY = 1, SERIALIZE = 2;
 
     protected String TAG = "PrintfManager";
+
+    protected List<BluetoothChangLister> bluetoothChangListerList = new ArrayList<>();
+
+    private ConnectSuccess connectSuccess;
+
+    public void setConnectSuccess(ConnectSuccess connectSuccess) {
+        this.connectSuccess = connectSuccess;
+    }
+
+    /**
+     * 是否正在连接
+     */
+    private volatile boolean CONNECTING = false;
+
+    public boolean isCONNECTING() {
+        return CONNECTING;
+    }
+
+    /**
+     * 添加蓝牙改变监听
+     *
+     * @param bluetoothChangLister
+     */
+    public void addBluetoothChangLister(BluetoothChangLister bluetoothChangLister) {
+        bluetoothChangListerList.add(bluetoothChangLister);
+    }
+
+    /**
+     * 解除观察者
+     *
+     * @param bluetoothChangLister
+     */
+    public void removeBluetoothChangLister(BluetoothChangLister bluetoothChangLister) {
+        if (bluetoothChangLister == null) {
+            return;
+        }
+        if (bluetoothChangListerList.contains(bluetoothChangLister)) {
+            bluetoothChangListerList.remove(bluetoothChangLister);
+        }
+    }
 
     protected Context context;
 
@@ -35,19 +89,146 @@ public class PrintfManager {
         this.mPrinter = mPrinter;
     }
 
+    public void connection() {
+        if (mPrinter != null) {
+            CONNECTING = true;
+            mPrinter.openConnection();
+        }
+    }
 
     public PrinterInstance getPrinter() {
         return mPrinter;
     }
 
+    private boolean isHasPrinter = false;
 
+    public boolean isConnect() {
+        return isHasPrinter;
+    }
 
+    public void disConnect(final String text) {
+        MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                isHasPrinter = false;
+                if (mPrinter != null) {
+                    mPrinter.closeConnection();
+                    mPrinter = null;
+                }
+                //Util.ToastTextThread(context, text);
+            }
+        });
+    }
 
+    /*public void changBlueName(final String name) {
+        MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Util.ToastTextThread(context, context.getString(R.string.chang_bluetooth_name_now));
+                    String AT = "$OpenFscAtEngine$";
+                    mPrinter.sendByteData(AT.getBytes());
+                    Thread.sleep(500);
+                    byte[] read = mPrinter.read();
+                    if (read == null) {
+                        Util.ToastTextThread(context, context.getString(R.string.chang_bluetooth_name_fail));
+                    } else {
+                        String readString = new String(read);
+                        if (readString.contains("$OK,Opened$")) {//进入空中模式
+                            mPrinter.sendByteData(("AT+NAME=" + name + "\r\n").getBytes());
+                            Thread.sleep(500);
+                            byte[] isSuccess = mPrinter.read();
+                            if (new String(isSuccess).contains("OK")) {
+                                Util.ToastTextThread(context, context.getString(R.string.chang_bluetooth_name_success));
+                                SharedPreferencesManager.saveBluetoothName(context, name);
+                            } else {
+                                Util.ToastTextThread(context, context.getString(R.string.chang_bluetooth_name_fail));
+                            }
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }*/
+
+    public final static int NAME_CHANG = 104;
+
+    @SuppressLint("HandlerLeak")
+    public Handler mHandler = new Handler() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void handleMessage(Message msg) {
+            String bluetoothName = context.getString(R.string.no_connect_blue_tooth);
+            String bluetoothAddress = bluetoothName;
+            switch (msg.what) {
+                case PrinterConstants.Connect.SUCCESS://成功
+                    isHasPrinter = true;
+                    //Util.ToastText(context, context.getString(R.string.connection_success));
+                    bluetoothName = SharedPreferencesManager.getBluetoothName(context);
+                    bluetoothAddress = SharedPreferencesManager.getBluetoothAddress(context);
+                    if (connectSuccess != null) {
+                        connectSuccess.success();
+                    }
+                    break;
+                case PrinterConstants.Connect.FAILED://失败
+                    disConnect(context.getString(R.string.connection_fail));
+                    break;
+                case PrinterConstants.Connect.CLOSED://关闭
+                    disConnect(context.getString(R.string.bluetooth_disconnect));
+                    break;
+                case NAME_CHANG://名称改变
+                    BluetoothDevice device = (BluetoothDevice) msg.obj;
+                    bluetoothAddress = device.getAddress();
+                    bluetoothName = device.getName();
+                    break;
+
+            }
+
+            for (BluetoothChangLister bluetoothChangLister : bluetoothChangListerList) {
+                if (bluetoothChangLister != null) {
+                    bluetoothChangLister.chang(bluetoothName, bluetoothAddress);
+                }
+            }
+            CONNECTING = false;
+        }
+    };
 
     public void printf(final int width, final int height, final Bitmap bitmap, final Activity activity) {
-        System.out.println("testando impressão");
-        realPrintfBitmapByLabelView(width,height,bitmap,128,1);
+        MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (isConnect()) {
+                    //Util.ToastTextThread(activity, context.getString(R.string.print_now));
+                    realPrintfBitmapByLabelView(width,height,bitmap,128,1);
+                }
+            }
+        });
 
+    }
+
+
+    public void defaultConnection() {
+        String bluetoothName = SharedPreferencesManager.getBluetoothName(context);
+        if (bluetoothName == null) {
+            return;
+        }
+
+        String bluetoothAddress = SharedPreferencesManager.getBluetoothAddress(context);
+        if (bluetoothAddress == null) {
+            return;
+        }
+
+        BluetoothAdapter defaultAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> bondedDevices = defaultAdapter.getBondedDevices();
+        for (BluetoothDevice device : bondedDevices) {
+            if (device.getAddress().equals(bluetoothAddress)) {
+                mPrinter = new PrinterInstance(context, device, mHandler);
+                connection();
+                return;
+            }
+        }
     }
 
     /**
@@ -109,6 +290,23 @@ public class PrintfManager {
         mPrinter.sendByteData(PRINT.getBytes());
     }
 
+    /**
+     * Connect
+     *
+     * @param mDevice
+     */
+    public void openPrinter(final BluetoothDevice mDevice) {
+        MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                setPrinter(new PrinterInstance(context, mDevice, mHandler));
+                // default is gbk...
+                connection();
+                //Connection Save Address + Name
+                SharedPreferencesManager.updateBluetooth(context, mDevice);
+            }
+        });
+    }
 
     /**
      * real printf
@@ -167,5 +365,11 @@ public class PrintfManager {
         return bytes;
     }
 
+    public interface BluetoothChangLister {
+        void chang(String name, String address);
+    }
 
+    public interface ConnectSuccess {
+        void success();
+    }
 }

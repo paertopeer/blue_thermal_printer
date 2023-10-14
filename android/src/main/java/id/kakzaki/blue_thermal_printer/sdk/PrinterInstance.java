@@ -8,12 +8,8 @@ package id.kakzaki.blue_thermal_printer.sdk;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.hardware.usb.UsbDevice;
 import android.os.Handler;
-import id.kakzaki.blue_thermal_printer.sdk.bluetooth.BluetoothPort;
-import id.kakzaki.blue_thermal_printer.sdk.usb.USBPort;
 import id.kakzaki.blue_thermal_printer.sdk.util.Utils;
-import id.kakzaki.blue_thermal_printer.sdk.wifi.WiFiPort;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
@@ -26,16 +22,16 @@ public class PrinterInstance implements Serializable {
     private final String SDK_VERSION = "3.0";
 
     public PrinterInstance(Context context, BluetoothDevice bluetoothDevice, Handler handler) {
-        this.myPrinter = new BluetoothPort(context, bluetoothDevice, handler);
+    //    this.myPrinter = new BluetoothPort(context, bluetoothDevice, handler);
     }
 
-    public PrinterInstance(Context context, UsbDevice usbDevice, Handler handler) {
-        this.myPrinter = new USBPort(context, usbDevice, handler);
-    }
+    //public PrinterInstance(Context context, UsbDevice usbDevice, Handler handler) {
+    //    this.myPrinter = new USBPort(context, usbDevice, handler);
+    //}
 
-    public PrinterInstance(String ipAddress, int portNumber, Handler handler) {
-        this.myPrinter = new WiFiPort(ipAddress, portNumber, handler);
-    }
+    //public PrinterInstance(String ipAddress, int portNumber, Handler handler) {
+    //    this.myPrinter = new WiFiPort(ipAddress, portNumber, handler);
+   // }
 
     public String getEncoding() {
         return this.charsetName;

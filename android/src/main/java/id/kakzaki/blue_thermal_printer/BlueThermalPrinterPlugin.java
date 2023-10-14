@@ -59,7 +59,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
   private static final String TAG = "BThermalPrinterPlugin";
   private static final String NAMESPACE = "blue_thermal_printer";
   private static final int REQUEST_COARSE_LOCATION_PERMISSIONS = 1451;
-  private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+  private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
   private static ConnectedThread THREAD = null;
   private BluetoothAdapter mBluetoothAdapter;
 
