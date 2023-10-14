@@ -195,12 +195,11 @@ public class PrintfManager {
         }
     };
 
-    public void printf(final int width, final int height, final Bitmap bitmap, final Activity activity) {
+    public void printf(final int width, final int height, final Bitmap bitmap) {
         MyApplication.getInstance().getCachedThreadPool().execute(new Runnable() {
             @Override
             public void run() {
                 if (isConnect()) {
-                    //Util.ToastTextThread(activity, context.getString(R.string.print_now));
                     realPrintfBitmapByLabelView(width,height,bitmap,128,1);
                 }
             }
@@ -210,13 +209,16 @@ public class PrintfManager {
 
 
     public void defaultConnection() {
+        System.out.println("defaultConnection");
         String bluetoothName = SharedPreferencesManager.getBluetoothName(context);
         if (bluetoothName == null) {
+            System.out.println("name null");
             return;
         }
 
         String bluetoothAddress = SharedPreferencesManager.getBluetoothAddress(context);
         if (bluetoothAddress == null) {
+            System.out.println("address null");
             return;
         }
 

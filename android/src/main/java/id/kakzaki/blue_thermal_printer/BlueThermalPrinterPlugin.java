@@ -80,7 +80,10 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
   private Activity activity;
 
+  private PrintfManager printfManager;
+
   public BlueThermalPrinterPlugin() {
+
   }
 
   @Override
@@ -124,6 +127,8 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           final Activity activity,
           final ActivityPluginBinding activityBinding) {
     synchronized (initializationLock) {
+      printfManager = PrintfManager.getInstance(context);
+      printfManager.defaultConnection();
       Log.i(TAG, "setup");
       this.activity = activity;
       this.context = application;
@@ -300,8 +305,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
       case "printCustom":
         if (arguments.containsKey("message")) {
-          PrintfManager printfManager;
-          printfManager = PrintfManager.getInstance(context);
           /*String message = (String) arguments.get("message");
           int size = (int) arguments.get("size");
           int align = (int) arguments.get("align");
@@ -310,7 +313,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           int largura = 72;
           int altura = 50;
           Bitmap bitmap = Bitmap.createBitmap(largura, altura, Bitmap.Config.ARGB_8888);
-          printfManager.printf(72, 50, bitmap, activity);
+          printfManager.printf(72, 50, bitmap);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
