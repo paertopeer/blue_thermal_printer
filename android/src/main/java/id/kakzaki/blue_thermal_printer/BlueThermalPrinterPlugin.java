@@ -49,6 +49,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
 
+import android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
@@ -642,15 +643,15 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       switch (align) {
         case 0:
           // left align
-          THREAD.write(PrinterCommands.ESC_ALIGN_LEFT);
+          THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_LEFT);
           break;
         case 1:
           // center align
-          THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+          THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_CENTER);
           break;
         case 2:
           // right align
-          THREAD.write(PrinterCommands.ESC_ALIGN_RIGHT);
+          THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_RIGHT);
           break;
       }
       if(charset != null) {
@@ -658,7 +659,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       } else {
         THREAD.write(message.getBytes());
       }
-      THREAD.write(PrinterCommands.FEED_LINE);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.FEED_LINE);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);
@@ -695,7 +696,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           THREAD.write(bb4);
           break;
       }
-      THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_CENTER);
       String line = String.format("%-15s %15s %n", msg1, msg2);
       if(format != null) {
         line = String.format(format, msg1, msg2);
@@ -742,7 +743,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           THREAD.write(bb4);
           break;
       }
-      THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_CENTER);
       String line = String.format("%-10s %10s %10s %n", msg1, msg2  , msg3);
       if(format != null) {
         line = String.format(format, msg1, msg2, msg3);
@@ -789,7 +790,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           THREAD.write(bb4);
           break;
       }
-      THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.ESC_ALIGN_CENTER);
       String line = String.format("%-8s %7s %7s %7s %n", msg1, msg2,msg3,msg4);
       if(format != null) {
         line = String.format(format, msg1, msg2,msg3,msg4);
@@ -813,7 +814,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       return;
     }
     try {
-      THREAD.write(PrinterCommands.FEED_LINE);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.FEED_LINE);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);
@@ -827,7 +828,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       return;
     }
     try {
-      THREAD.write(PrinterCommands.FEED_PAPER_AND_CUT);
+      THREAD.write(android.src.main.java.id.kakzaki.blue_thermal_printer.PrinterCommands.FEED_PAPER_AND_CUT);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);
