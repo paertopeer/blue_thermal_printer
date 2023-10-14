@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Bitmap.CompressFormat;
 import android.util.Log;
-import com.android.print.sdk.PrinterInstance;
+import id.kakzaki.blue_thermal_printer.sdk.PrinterInstance;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
