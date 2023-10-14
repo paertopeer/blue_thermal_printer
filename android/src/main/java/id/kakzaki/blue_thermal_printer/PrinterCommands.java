@@ -1,4 +1,4 @@
-package id.kakzaki.blue_thermal_printer;
+package android.src.main.java.id.kakzaki.blue_thermal_printer;
 
 /**
  * Created by https://goo.gl/UAfmBd on 2/6/2017.

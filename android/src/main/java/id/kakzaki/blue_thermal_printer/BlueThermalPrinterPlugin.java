@@ -299,11 +299,17 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
       case "printCustom":
         if (arguments.containsKey("message")) {
-          String message = (String) arguments.get("message");
+          PrintfManager printfManager;
+          printfManager = PrintfManager.getInstance(context);
+          /*String message = (String) arguments.get("message");
           int size = (int) arguments.get("size");
           int align = (int) arguments.get("align");
           String charset = (String) arguments.get("charset");
-          printCustom(result, message, size, align, charset);
+          printCustom(result, message, size, align, charset);*/
+          int largura = 72;
+          int altura = 50;
+          Bitmap bitmap = Bitmap.createBitmap(largura, altura, Bitmap.Config.ARGB_8888)
+          printfManager.printf(72, 50, bitmap, activity);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }

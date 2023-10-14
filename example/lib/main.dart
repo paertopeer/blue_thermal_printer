@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatefulWidget {
