@@ -127,8 +127,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           final Activity activity,
           final ActivityPluginBinding activityBinding) {
     synchronized (initializationLock) {
-      printfManager = PrintfManager.getInstance(context);
-      printfManager.defaultConnection();
       Log.i(TAG, "setup");
       this.activity = activity;
       this.context = application;
@@ -141,6 +139,8 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
       mBluetoothAdapter = mBluetoothManager.getAdapter();
       activityBinding.addRequestPermissionsResultListener(this);
+      printfManager = PrintfManager.getInstance(context);
+      printfManager.defaultConnection();
     }
   }
 
