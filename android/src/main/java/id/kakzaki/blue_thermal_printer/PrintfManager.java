@@ -198,7 +198,7 @@ public class PrintfManager {
     };
 
     public void printf(final int width, final int height, final Bitmap bitmap) {
-        System.out.println("Bluetooth conectado: " + isConnect());
+        System.out.println("1.1 Bluetooth conectado: " + isConnect());
         if (isConnect()) {
             realPrintfBitmapByLabelView(width,height,bitmap,128,1);
         }
