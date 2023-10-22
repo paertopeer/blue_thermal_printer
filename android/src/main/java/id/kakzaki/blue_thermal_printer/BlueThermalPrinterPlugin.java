@@ -132,6 +132,10 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       this.context = application;
       channel = new MethodChannel(messenger, NAMESPACE + "/methods");
       channel.setMethodCallHandler(this);
+      System.out.println("passou aqui 1");
+      printfManager = PrintfManager.getInstance(context);
+      printfManager.defaultConnection();
+      System.out.println("passou aqui 2");
       stateChannel = new EventChannel(messenger, NAMESPACE + "/state");
       stateChannel.setStreamHandler(stateStreamHandler);
       EventChannel readChannel = new EventChannel(messenger, NAMESPACE + "/read");
@@ -139,8 +143,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
       mBluetoothAdapter = mBluetoothManager.getAdapter();
       activityBinding.addRequestPermissionsResultListener(this);
-      printfManager = PrintfManager.getInstance(context);
-      printfManager.defaultConnection();
     }
   }
 

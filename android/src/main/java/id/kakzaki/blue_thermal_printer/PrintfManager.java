@@ -162,6 +162,8 @@ public class PrintfManager {
         public void handleMessage(Message msg) {
             String bluetoothName = context.getString(R.string.no_connect_blue_tooth);
             String bluetoothAddress = bluetoothName;
+            System.out.println("Handler");
+            System.out.println(msg.what);
             switch (msg.what) {
                 case PrinterConstants.Connect.SUCCESS://成功
                     isHasPrinter = true;
